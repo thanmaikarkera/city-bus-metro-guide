@@ -1,0 +1,234 @@
+/*
+  style.css - HOW THE PAGE LOOKS
+  ------------------------------
+  1. Variables (colours, spacing) in :root, so we change them in ONE place
+  2. Layout: a two-column grid (left = search + results, right = map)
+  3. Components: buttons, form fields, result cards, tables
+  4. High-contrast mode + small screens
+*/
+
+/* ===== 1. VARIABLES ===== */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #1d232b;
+  --muted: #5b6573;
+  --border: #dde1e6;
+  --accent: #1f4e8c;       /* main blue */
+  --accent-soft: #e8eef7;
+  --good: #1b7a3d;
+  --warn: #9a5b00;
+  --radius: 8px;
+  --font: "Segoe UI", "Nirmala UI", "Noto Sans Kannada", system-ui, -apple-system, sans-serif;
+}
+
+/* High-contrast mode: app.js adds class="high-contrast" to <body> */
+body.high-contrast {
+  --bg: #000;
+  --surface: #000;
+  --text: #fff;
+  --muted: #e6e6e6;
+  --border: #fff;
+  --accent: #ffd400;
+  --accent-soft: #222;
+  --good: #7dff9b;
+  --warn: #ffd400;
+}
+
+/* ===== 2. BASE + LAYOUT ===== */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+
+h1, h2, h3 { margin: 0; line-height: 1.25; }
+h1 { font-size: 1.35rem; }
+h2 { font-size: 1.05rem; }
+h3 { font-size: 0.95rem; margin-bottom: 6px; }
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 28px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.subtitle { margin: 2px 0 0; color: var(--muted); font-size: 0.9rem; }
+.header-tools { display: flex; align-items: center; gap: 8px; }
+
+.notice {
+  margin: 0;
+  padding: 8px 28px;
+  font-size: 0.85rem;
+  color: var(--warn);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+/* The main 2-column grid: fixed-width left panel, map takes the rest */
+.layout {
+  display: grid;
+  grid-template-columns: 430px 1fr;
+  gap: 20px;
+  padding: 20px 28px;
+  align-items: start;
+}
+
+.panel { display: flex; flex-direction: column; gap: 16px; }
+.layout > * { min-width: 0; }   /* lets grid columns shrink instead of overflowing */
+
+.search-form, .results, .details, .map-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* Map stays visible while you scroll the results */
+.map-panel { position: sticky; top: 20px; padding: 8px; }
+#map { height: calc(100vh - 210px); min-height: 420px; border-radius: 6px; background: var(--accent-soft); }
+.map-note { margin: 6px 4px 0; font-size: 0.8rem; color: var(--muted); }
+
+.site-footer { padding: 10px 28px 24px; font-size: 0.8rem; color: var(--muted); }
+
+/* ===== 3. COMPONENTS ===== */
+
+/* Form */
+.search-form { display: grid; gap: 10px; }
+.field { display: grid; gap: 4px; }
+.field.inline { display: flex; align-items: center; gap: 8px; }
+label { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+
+select {
+  font: inherit;
+  padding: 8px 10px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* Buttons */
+button { font: inherit; cursor: pointer; }
+.btn-primary {
+  padding: 10px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+}
+body.high-contrast .btn-primary { color: #000; }
+.btn-primary:hover { filter: brightness(1.1); }
+
+.btn-plain {
+  padding: 6px 10px;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.btn-plain:hover, .btn-plain[aria-pressed="true"] { background: var(--accent-soft); }
+.swap { justify-self: start; font-size: 0.85rem; }
+
+/* Visible focus ring for keyboard users (accessibility) */
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.badge {
+  padding: 3px 8px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+}
+
+/* Results */
+.results-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+.message { color: var(--muted); font-size: 0.9rem; }
+.message:empty { display: none; }
+
+.options { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+
+.option-card {
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.option-card:hover { border-color: var(--accent); }
+.option-card[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); }
+
+.option-head { display: flex; justify-content: space-between; align-items: baseline; }
+.option-time { font-size: 1.15rem; font-weight: 700; }
+.option-fare { font-size: 1.05rem; font-weight: 700; }
+.option-meta { font-size: 0.82rem; color: var(--muted); }
+
+/* Little coloured "Bus 101" / "Green Line" chips */
+.chips { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 6px; }
+.chip {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 4px;
+}
+body.high-contrast .chip { outline: 1px solid #fff; }
+.arrow { color: var(--muted); font-size: 0.8rem; }
+
+/* Details: step-by-step timeline */
+.details { display: grid; gap: 16px; }
+.steps { list-style: none; margin: 0; padding: 0; }
+.step {
+  position: relative;
+  padding: 0 0 12px 18px;
+  border-left: 4px solid var(--line, var(--border));
+}
+.step:last-child { padding-bottom: 0; }
+.step-title { font-weight: 600; }
+.step-meta { font-size: 0.83rem; color: var(--muted); }
+.end { font-weight: 600; padding-left: 22px; }
+.small { font-size: 0.83rem; color: var(--muted); margin: 6px 0 0; }
+
+.status { padding: 8px 10px; border-radius: 6px; font-size: 0.88rem; background: var(--accent-soft); }
+.status.good { color: var(--good); }
+.status.warn { color: var(--warn); }
+
+/* Facilities table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+th, td { padding: 5px 4px; text-align: center; border-bottom: 1px solid var(--border); }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--muted); font-weight: 600; }
+.yes { color: var(--good); font-weight: 700; }
+.no { color: var(--muted); }
+
+ul.plain { margin: 0; padding-left: 18px; font-size: 0.88rem; }
+
+/* Hidden visually but still read by screen readers */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.skip-link { position: absolute; left: -999px; top: 8px; padding: 8px 12px; background: var(--accent); color: #fff; z-index: 2000; }
+.skip-link:focus { left: 8px; }
+
+/* ===== 4. SMALLER SCREENS (desktop-first, so this comes last) ===== */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; padding: 16px; }
+  .map-panel { position: static; }
+  #map { height: 360px; min-height: 0; }
+  .site-header { flex-wrap: wrap; padding: 12px 16px; }
+  .notice, .site-footer { padding-left: 16px; padding-right: 16px; }
+}
