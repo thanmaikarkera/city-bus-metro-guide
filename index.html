@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+  index.html - THE STRUCTURE (skeleton) OF THE PAGE
+  -------------------------------------------------
+  HTML only says WHAT is on the page (headings, form, lists, map box).
+  How it LOOKS is in css/style.css. What it DOES is in the js/ files.
+  data-i18n="key" = this text is swapped between English and Kannada by app.js.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>City Bus and Metro Guide · Mandya</title>
+  <!-- Small bus icon for the browser tab (drawn with SVG, no image file needed) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='3' width='24' height='22' rx='4' fill='%231f4e8c'/%3E%3Crect x='8' y='7' width='16' height='8' fill='%23fff'/%3E%3Ccircle cx='10' cy='27' r='3' fill='%231f4e8c'/%3E%3Ccircle cx='22' cy='27' r='3' fill='%231f4e8c'/%3E%3C/svg%3E">
+  <meta name="description" content="Find sample bus and metro routes, fares, travel time and accessibility information for Mandya.">
+
+  <!-- Leaflet (free, open-source map library) - its CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+
+  <!-- Our own design -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Accessibility: keyboard users can jump straight to the form -->
+  <a class="skip-link" href="#search" data-i18n="skip">Skip to search</a>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div>
+      <h1 data-i18n="title">City Bus and Metro Guide</h1>
+      <p class="subtitle" data-i18n="subtitle">Mandya · routes, fares, travel time and accessibility</p>
+    </div>
+    <div class="header-tools">
+      <span id="data-source" class="badge" data-i18n="loading">Loading data…</span>
+      <button type="button" id="contrast-btn" class="btn-plain" aria-pressed="false" data-i18n="contrastBtn">High contrast</button>
+      <button type="button" id="lang-btn" class="btn-plain" lang="kn">ಕನ್ನಡ</button>
+    </div>
+  </header>
+
+  <p class="notice" role="note" data-i18n="sampleNotice">Sample data for a college project — not official routes, fares or timings.</p>
+
+  <!-- ===== MAIN: left panel (form + results) and right panel (map) ===== -->
+  <main class="layout">
+    <section class="panel" aria-labelledby="search-heading">
+
+      <!-- SEARCH FORM -->
+      <form id="search" class="search-form">
+        <h2 id="search-heading" data-i18n="searchHeading">Plan your trip</h2>
+
+        <div class="field">
+          <label for="from" data-i18n="from">From</label>
+          <select id="from" required></select>
+        </div>
+
+        <button type="button" id="swap-btn" class="btn-plain swap" data-i18n="swap">Swap</button>
+
+        <div class="field">
+          <label for="to" data-i18n="to">To</label>
+          <select id="to" required></select>
+        </div>
+
+        <div class="field">
+          <label for="passenger" data-i18n="passenger">Passenger type</label>
+          <select id="passenger"></select>
+        </div>
+
+        <button type="submit" class="btn-primary" data-i18n="search">Find routes</button>
+      </form>
+
+      <!-- RESULTS -->
+      <section class="results" aria-labelledby="results-heading">
+        <div class="results-top">
+          <h2 id="results-heading" data-i18n="resultsHeading">Route options</h2>
+          <div class="field inline">
+            <label for="sort" data-i18n="sortBy">Sort by</label>
+            <select id="sort">
+              <option value="fastest" data-i18n="fastest">Fastest</option>
+              <option value="cheapest" data-i18n="cheapest">Cheapest</option>
+              <option value="changes" data-i18n="changes">Fewest changes</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- aria-live: screen readers announce new results automatically -->
+        <div id="message" class="message" aria-live="polite"></div>
+        <ol id="options" class="options"></ol>
+      </section>
+
+      <!-- DETAILS OF THE SELECTED OPTION (filled by app.js) -->
+      <section id="details" class="details" hidden></section>
+    </section>
+
+    <!-- MAP -->
+    <section class="map-panel" aria-labelledby="map-heading">
+      <h2 id="map-heading" class="visually-hidden" data-i18n="mapHeading">Map</h2>
+      <div id="map" role="img" aria-label="Map of bus and metro routes in Mandya"></div>
+      <p class="map-note" data-i18n="mapNote">Lines are drawn straight between stops.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer" data-i18n="footer">College project</footer>
+
+  <!-- ===== SCRIPTS (order matters: each file uses the ones above it) ===== -->
+  <!-- "integrity" = a fingerprint of the file: the browser refuses it if the CDN copy was changed -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"
+          integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/routeFinder.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
